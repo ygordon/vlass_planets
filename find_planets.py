@@ -9,40 +9,16 @@ import numpy as np, argparse
 
 from astropy.table import Table
 
+###run as:
+### >python find_planets.py subtile_file_name (e.g. CIRADA_VLASS1QL_table3_subtile.csv)
+### can take a while to run on all 35k subtiles, data/test_subtiles.fits can be used to for fast tests.
+
+
 ########################################
 #time of code check - not important for code to run
 import time
 start_time = time.time()
 ########################################
-
-
-####################################################################################
-####################################################################################
-###params
-
-#subtile_file = ('/Users/yjangordon/Documents/science/survey_data/VLASS/catalogues/'
-#                + 'CIRADA_VLASS1QL_table3_subtile_info_v1a_correctdates.fits')
-#comp_file = ('/Users/yjangordon/Documents/science/survey_data/VLASS/catalogues/'
-#             + 'CIRADA_VLASS1QL_table1_components_v1a.fits')
-
-
-####greg's code test
-#test_time = Time("2014-09-22 23:22")
-#test_coordinates = SkyCoord(ra=10*u.degree, dec=9*u.degree, frame='icrs')
-
-jpos1 = SkyCoord('14h58m32.73s-15d50m45s')
-jtim1 = Time('2018-01-01 14:13:41.925', scale='utc')
-
-#jpos2 = SkyCoord('15h17m20.7s-17d02m18s')
-#jtim2 = Time('2018-03-02 16:23:28.341', scale='utc')
-
-j1subtile = 'J145838-153000'
-
-
-eloc = EarthLocation.of_site('vla')
-bodies = ('sun', 'mercury', 'venus', 'moon', 'mars', 'jupiter',
-          'saturn', 'uranus', 'neptune', 'pluto')
-
 
 
 
@@ -65,11 +41,9 @@ bodies = ('sun', 'mercury', 'venus', 'moon', 'mars', 'jupiter',
 #    print ("All Clear")
 
 
-
 def planet_find(coord, obstime, maxsep=30*u.arcmin):
     'use emphemerids to determine if a planet/sun/moon is potentially in field of obs'
     
-#    t0 = time.time()
 
     eloc = EarthLocation.of_site('vla')
     bodies = ['sun', 'mercury', 'venus', 'moon', 'mars', 'jupiter',
@@ -85,13 +59,8 @@ def planet_find(coord, obstime, maxsep=30*u.arcmin):
                 print(" ")
                 print("Warning: {} within {} arcsec".format(body.capitalize(),np.ceil(sep.arcsec)))
                 print(" ")
-#                planet_warning = True
                 planet_warnings[body] = SkyCoord(body_coords.ra, body_coords.dec)
 
-    ###how long to run
-#    t1 = time.time()
-#    print('')
-#    print('time = ', np.round(t1-t0, 3), 's')
 
     if len(planet_warnings.keys())>0:
         return planet_warnings
@@ -175,15 +144,6 @@ def parseargs():
 ####################################################################################
 ###main
 
-#subtiles = Table.read(subtile_file)
-#
-#test_st = subtiles[22011-5: 22011+5]
-#
-#
-#tsearch = search_subtiles_for_planets(test_st)
-#
-#tout = planet_search_to_table(tsearch)
-
 
 if __name__ == '__main__':
     args = parseargs()
@@ -192,8 +152,6 @@ if __name__ == '__main__':
     outdata = planet_search_to_table(searchres)
     outdata.write('planet_finding_results.fits', format='fits')
     print('END: ', ("--- %s seconds ---" % (time.time() - start_time)))
-
-
 
 
 #########################################
